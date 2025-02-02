@@ -5,9 +5,11 @@ import modules.GraphSolver as gs
 import modules.QGraphicsViewManager as Q_GVM
 import modules.FileManager as fm
 import modules.GraphGenerator as gg
+import modules.MoveAgent as ma
 import PyQt5.QtWidgets as QtWidgets
 from typing import Union
 import time
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import(
     QMouseEvent, 
     QColor
@@ -34,7 +36,8 @@ class Editor(Ui_MainWindow):
         self.setupUi(Form)
         
         self.QGVM = Q_GVM.QGraphicsViewManager(self.graphicsView)
-        self.file_manager = fm.FileManager(self.QGVM.objects)
+        self.file_manager = fm.FileManager(self.QGVM)
+        self.move_agent = ma.MoveAgent(self.QGVM)
         self.selected_object = None
         self.status = 0
         
@@ -42,17 +45,18 @@ class Editor(Ui_MainWindow):
         self.max_connections = 3
         
         self.connect_functions()
+        self.file_manager.load_ens_files(self.listWidget)
         self.set_defaults()
     
     def connect_functions(self) -> None:
         """Gives each button its function
         """
-        self.centralwidget.mouseMoveEvent = self.refresh_scene
         self.graphicsView.mouseMoveEvent = self.mouseMoveEvent
         self.graphicsView.mousePressEvent = self.click_handler
         
         self.pointButton.clicked.connect(lambda: self.change_status(0))
         self.selectionButton.clicked.connect(lambda: self.change_status(1))
+        self.moveButton.clicked.connect(lambda: self.change_status(2))
         
         self.startCheck.clicked.connect(lambda: self.change_point_status(self.startCheck))
         self.endCheck.clicked.connect(lambda: self.change_point_status(self.endCheck))
@@ -66,6 +70,8 @@ class Editor(Ui_MainWindow):
         
         self.saveAction.triggered.connect(self.save_file)
         self.openAction.triggered.connect(self.open_file)
+        
+        self.listWidget.itemClicked.connect(lambda: self.file_manager.load_selected_file(self.listWidget))
     
     def set_defaults(self) -> None:
         """Sets the default values for a lot of widgets and variables that are likely to change
@@ -74,7 +80,7 @@ class Editor(Ui_MainWindow):
         self.status = 0
         self.statusLabel.setText("Drawing Nodes")
         
-        self.selectionFrame.setVisible(False)
+        # self.selectionFrame.setVisible(False)
         
         self.maxNodeSpin.setValue(self.max_nodes)
         self.maxConSpin.setValue(self.max_connections)
@@ -129,11 +135,19 @@ class Editor(Ui_MainWindow):
             self.QGVM.add_point(event)
         
         elif self.status == 1:
-            obj = self.QGVM.get_clicked_object(event)
-            
-            if obj:
-                self.selected_object = obj
-                self.show_properties(obj)
+            if event.button() == Qt.LeftButton:
+                obj = self.QGVM.get_clicked_object(event)
+                
+                if obj:
+                    self.selected_object = obj
+                    self.show_properties(obj)
+        
+        elif self.status == 2:
+            if event.button() == Qt.LeftButton:
+                self.move_agent.select_objects(event)
+                self.move_agent.highlight_selected_objects()
+            elif event.button() == Qt.RightButton:
+                self.move_agent.move_selected_objects(event)
         
         self.refresh_selection()
     
@@ -192,10 +206,12 @@ class Editor(Ui_MainWindow):
         
         elif self.status == 1:
             self.statusLabel.setText("Selecting nodes")
+        
+        elif self.status == 2:
+            self.statusLabel.setText("Moving nodes")
     
     def refresh_scene(
-        self, 
-        event: QMouseEvent
+        self,
     ) -> None:
         """Refreshes the scene
 
@@ -231,7 +247,7 @@ class Editor(Ui_MainWindow):
             else:
                 self.selected_object.color = QColor(0, 0, 0, 255)
         
-        self.refresh_scene(None)
+        self.refresh_scene()
     
     def _set_start_end(self) -> Union[int, core.Knoten, None, None]:
         """Sets the start and end node and returns them including their index in the nodes list
@@ -256,7 +272,7 @@ class Editor(Ui_MainWindow):
     def initialize_solution(self) -> None:
         """Initializes the pathfinding
         """
-        self.refresh_scene(None)
+        self.refresh_scene()
         start, end = self._set_start_end()
         
         if start and end:
@@ -318,6 +334,11 @@ class Editor(Ui_MainWindow):
         graph_gen.set_connections()
         graph_gen.create_lines()
         graph_gen.insert_to_graphicsview()
+    
+    def move_selected_node(self, event: QMouseEvent) -> None:
+        if self.selected_object:
+            self.selected_object.pos = [event.x(), event.y()]
+            self.refresh_scene()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

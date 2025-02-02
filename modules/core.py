@@ -30,7 +30,6 @@ class Knoten:
         
         self.is_start = False
         self.is_end = False
-        
         self._set_graphics_item()
     
     def setX(
@@ -54,6 +53,21 @@ class Knoten:
             y (Union[int, float]): new y position
         """
         self.pos[1] = y
+    
+    def setColor(
+        self,
+        color: QColor
+    ) -> None:
+        """Changes the color of the node
+
+        Args:
+            color (QColor): new color
+        """
+        try:
+            self.color = color
+            self.graphics_item.setPen(self.color)
+        except:
+            raise BaseException(f"Error setting color {color} for {self}")
     
     def x(self) -> Union[int, float]:
         """Returns the x position of the node

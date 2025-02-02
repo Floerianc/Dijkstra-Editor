@@ -144,14 +144,14 @@
        <x>10</x>
        <y>50</y>
        <width>221</width>
-       <height>211</height>
+       <height>261</height>
       </rect>
      </property>
      <property name="styleSheet">
       <string notr="true">border: none;</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="documentMode">
       <bool>true</bool>
@@ -232,6 +232,51 @@
        </widget>
       </widget>
      </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Saved Graphs</string>
+      </attribute>
+      <widget class="QListWidget" name="listWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>221</width>
+         <height>231</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Cascadia Mono Light</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">text-margin-left: 15px</string>
+       </property>
+       <property name="movement">
+        <enum>QListView::Static</enum>
+       </property>
+       <property name="flow">
+        <enum>QListView::TopToBottom</enum>
+       </property>
+       <property name="isWrapping" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="resizeMode">
+        <enum>QListView::Adjust</enum>
+       </property>
+       <property name="viewMode">
+        <enum>QListView::ListMode</enum>
+       </property>
+       <property name="currentRow">
+        <number>-1</number>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
        <string>Sources</string>
@@ -242,7 +287,7 @@
          <x>0</x>
          <y>0</y>
          <width>221</width>
-         <height>191</height>
+         <height>231</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -257,7 +302,7 @@
           <x>10</x>
           <y>10</y>
           <width>201</width>
-          <height>171</height>
+          <height>161</height>
          </rect>
         </property>
         <property name="text">
@@ -317,7 +362,7 @@
       <widget class="QPushButton" name="pointButton">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>140</x>
          <y>6</y>
          <width>41</width>
          <height>31</height>
@@ -349,7 +394,7 @@
       <widget class="QPushButton" name="startButton">
        <property name="geometry">
         <rect>
-         <x>140</x>
+         <x>200</x>
          <y>6</y>
          <width>41</width>
          <height>31</height>
@@ -360,6 +405,22 @@
        </property>
        <property name="text">
         <string>Run</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="moveButton">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>6</y>
+         <width>41</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(209, 209, 209);</string>
+       </property>
+       <property name="text">
+        <string>Move</string>
        </property>
       </widget>
      </widget>

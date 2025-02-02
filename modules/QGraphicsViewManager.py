@@ -97,6 +97,22 @@ class QGraphicsViewManager:
         
         return False
     
+    def get_all_objects_on_pos(self, pos: core.Knoten) -> list:
+        """Returns all objects on a position
+
+        Args:
+            pos (core.Knoten): Position
+
+        Returns:
+            list: List of objects
+        """
+        objects = []
+        
+        for obj in self.objects:
+            if utils.rectangle_collide(pos, obj.pos):
+                objects.append(obj)
+        return objects
+    
     def find_object(
         self, 
         pos: core.Knoten, 
@@ -114,6 +130,18 @@ class QGraphicsViewManager:
         for i, point in enumerate(points):
             if pos.pos[0] == point.pos[0] and pos.pos[1] == point.pos[1]:
                 return i
+    
+    def refresh_scene(
+        self,
+    ) -> None:
+        """Refreshes the scene
+
+        Args:
+            event (QMouseEvent): Mouse event. Not used.
+        """
+        self.scene.clear()
+        self.refresh_objects()
+        self.redraw_objects()
     
     def refresh_objects(self) -> None:
         """Refreshes the graphics_item of each object in self.objects

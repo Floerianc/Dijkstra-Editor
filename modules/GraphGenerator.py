@@ -34,7 +34,11 @@ class GraphGenerator:
         """Generates randomly placed nodes on the graph
         """
         for i in range(self.max_points):
-            node = core.Knoten((random.randint(10, self.gv_width - 10), random.randint(10, self.gv_height - 10)))
+            pos = [
+                random.randint(10, self.gv_width - 10), 
+                random.randint(10, self.gv_height - 10)
+            ]
+            node = core.Knoten(pos)
             
             if i == self.start_index:
                 node.is_start = True
@@ -70,8 +74,8 @@ class GraphGenerator:
         for i, node in self.nodes.items():
             for connection in node['connections']:
                 line = core.Kante(
-                    core.Knoten((node['node'].x(), node['node'].y())),
-                    core.Knoten((connection['node'].x(), connection['node'].y()))
+                    core.Knoten([node['node'].x(), node['node'].y()]),
+                    core.Knoten([connection['node'].x(), connection['node'].y()])
                 )
                 self.lines.append(line)
     
